@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database>
+    <EnglishText>
+        <Row Tag="LOC_MOD_BZ_ZOOM_NAME">
+            <Text>Zoom Zoom</Text>
+        </Row>
+        <Row Tag="LOC_MOD_BZ_ZOOM_DESCRIPTION">
+            <Text>better camera zoom range</Text>
+        </Row>
+    </EnglishText>
+</Database>

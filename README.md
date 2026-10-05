@@ -1,2 +1,2 @@
-# civ7-zoom
-Zoom Zoom mod for Civilization VII
+# Zoom Zoom 1.0.0
+better camera zoom range
