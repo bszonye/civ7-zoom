@@ -1,2 +1,2 @@
-# Zoom Zoom 1.0.0
+# Zoom Zoom 1.0.1
 better camera zoom range
