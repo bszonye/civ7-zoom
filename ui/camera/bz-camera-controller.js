@@ -67,6 +67,8 @@ CC.proto.cameraZoomOut = function(status, x) {
 
 // TRIX: wait for camera to settle and then repeat city zoom
 function rezoom() {
+  const timeout = performance.now() + 500;
+  const MAX_ZOOM = 0.3;
   const mode = InterfaceMode.getCurrent();
   const handler = InterfaceMode.getInterfaceModeHandler(mode);
   const cityID = handler.cityID ?? handler.Context.CityID;
@@ -75,26 +77,26 @@ function rezoom() {
   let focus = Camera.calculateCameraFocusAndZoom(city.getPurchasedPlots(), 30, { region });
   if (focus) {
     const setFocus = () => {
+      if (timeout < performance.now()) return;
       const lastFocus = focus;
       focus = Camera.calculateCameraFocusAndZoom(city.getPurchasedPlots(), 30, { region });
-      if (Math.round(150 * focus.z) == Math.round(150 * lastFocus.z)) {
-        const cameraFrame = {
-          duration: 1,
-          tilt: 30,
-          focus: { x: focus.x, y: focus.y },
-          zoom: utils.clamp(focus.z, 0.3, 1),
-          func: InterpolationFunc.EaseOutSin,
-          writeMask: KeyframeFlag.FLAG_ALL,
-          // overwrite all affected camera state
-          end: true
-          // return to player control once done
-        };
-        Camera.addKeyframe(cameraFrame);
-      } else {
-        delayByFrame(setFocus, 1);
-      }
+      if (Math.round(250 * focus.z) == Math.round(250 * lastFocus.z)) return;
+      const cameraFrame = {
+        duration: 1,
+        tilt: 30,
+        focus: { x: focus.x, y: focus.y },
+        zoom: utils.clamp(focus.z, MAX_ZOOM, 1),
+        func: InterpolationFunc.EaseOutSin,
+        writeMask: KeyframeFlag.FLAG_ALL,
+        // overwrite all affected camera state
+        end: true
+        // return to player control once done
+      };
+      Camera.clearAnimation();
+      Camera.addKeyframe(cameraFrame);
+      delayByFrame(setFocus, 3);
     }
-    delayByFrame(setFocus, 2);
+    delayByFrame(setFocus, 3);
   } else {
     Camera.lookAtPlot(city.location, { zoom: 1, tilt: 30 });
   }
@@ -102,9 +104,7 @@ function rezoom() {
 CC.onInterfaceModeChanged = function(event) {
   const modes = ["INTERFACEMODE_ACQUIRE_TILE", "INTERFACEMODE_PLACE_BUILDING"];
   if (modes.includes(event?.detail?.newMode) && this.bzCurrentFoV != this.bzDefaultFoV) {
-    Camera.clearAnimation();
     Camera.setVerticalFoV(this.bzCurrentFoV = this.bzDefaultFoV);
-    Camera.setTilt(0, 0);
     rezoom();
   }
 }
