@@ -43,6 +43,8 @@ export default [
                 InputActionStatuses: "readonly",
                 InputContext: "readonly",
                 InputDeviceType: "readonly",
+                InterpolationFunc: "readonly",
+                KeyframeFlag: "readonly",
                 LiteEvent: "readonly",
                 Loading: "readonly",
                 Locale: "readonly",
